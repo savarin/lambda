@@ -1,6 +1,4 @@
-import pandas as pd
 from functools import reduce
-from model import Passenger
 
 
 class Batch(object):
@@ -41,31 +39,6 @@ class Batch(object):
 
             feature_values = [None, [0, 1]]
             self.feature_counts[feature_name] = self.count(feature_array, feature_values)
-
-
-# def convert_counts(feature_counts):
-#     result = {}
-
-#     for feature_name, v1 in feature_counts.iteritems():
-#         for feature_value_pair, counts in v1.iteritems():
-#             key = (feature_name, feature_value_pair[0])
-
-#             if counts == 0:
-#                 continue
-
-#             if key not in result:
-#                 result[key] = [counts, 0, 0]
-#             else:
-#                 result[key][0] += counts
-
-#             if feature_value_pair[1] == 1:
-#                 result[key][1] = counts
-
-#     for key, v in result.iteritems():
-#         ratio = v[1] / float(v[0])
-#         result[key] = [v[0], v[1], ratio]
-
-#     return result
 
 
 # def respond_counts(final_counts, feature_name, feature_value, signal_type):
