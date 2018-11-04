@@ -18,6 +18,7 @@ def collect_counts(feature_array, feature_values):
 
     return result
 
+
 def convert_counts(feature_counts):
     result = {}
 
@@ -41,6 +42,7 @@ def convert_counts(feature_counts):
         result[key] = [v[0], v[1], ratio]
 
     return result
+
 
 def respond_counts(final_counts, feature_name, feature_value, signal_type):
     if (feature_name, feature_value) in final_counts:
