@@ -1,5 +1,33 @@
 import pandas as pd
 from functools import reduce
+from model import Passenger
+
+
+class Batch(object):
+    def __init__(self):
+        self.counter = 0
+        self.labels = []
+        self.passengers = []
+
+        self.feature_names = ['sex', 'pclass', 'embarked']
+        self.feature_counts = {}
+
+    def process(self):
+        for feature_name in self.feature_names:
+            feature_array = []
+
+            for i in xrange(self.counter):
+                item = (self.labels[i], self.passengers[i].get(feature_name))
+                feature_array.append(item)
+
+            print feature_array
+
+    def ingest(self, label, passenger):
+        self.counter += 1
+        self.labels.append(label)
+        self.passengers.append(passenger)
+
+        self.process()
 
 
 def collect_counts(feature_array, feature_values):
@@ -57,7 +85,7 @@ def respond_counts(final_counts, feature_name, feature_value, signal_type):
     return -1
 
 
-def run():
+def run_():
     data = pd.read_csv('train.csv')
     feature_counts = {}
 
