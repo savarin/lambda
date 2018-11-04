@@ -1,16 +1,19 @@
 import pandas as pd
 import random
+import time
 
-from model import Passenger
+from data import Passenger
 from batch import Batch
 from serving import Serving
 from stream import Stream
+from model import Model
 
 
 if __name__ == '__main__':
     batch = Batch()
     serving = Serving()
     stream = Stream()
+    model = Model()
 
     data = pd.read_csv('train.csv')
     columns = list(data.columns)
@@ -23,6 +26,7 @@ if __name__ == '__main__':
     indices = [columns.index(_) for _ in attributes]
 
     counter = [0, 0]
+    metrics = [0, 0]
     size = random.randint(1, 3)
 
     while counter[1] + size < data.shape[0]:
@@ -33,15 +37,25 @@ if __name__ == '__main__':
 
         # start of day
         if not serving.overall_counts:
-            print 'not enough data points'
+            print 'no batch signals'
         else:
-            for passenger in passengers:
-                result = stream.respond(passenger)
+            for i in xrange(size):
+                result = stream.respond(passengers[i])
 
                 for feature_name in ['embarked', 'pclass', 'sex']:
-                    result += serving.respond('feature', (feature_name, passenger.get(feature_name)))
+                    key = (feature_name, passengers[i].get(feature_name))
+                    result += serving.respond('feature', key)
 
-                print counter[0], [round(_, 3) for _ in result]
+                if model.classifier:
+                    prediction = model.predict(result)[0]
+                    metrics[0] += 1
+
+                    if prediction == labels[i]:
+                        metrics[1] += 1
+
+                    print counter[0], prediction, labels[i]
+                else:
+                    print counter[0], 'no trained model'
 
         # end of day
         for i in xrange(size):
@@ -50,6 +64,19 @@ if __name__ == '__main__':
 
             serving.ingest(batch.passengers, batch.feature_counts)
             serving.process()
+
+            model.ingest(labels[i], passengers[i].get('idx'))
+
+        if counter[0] and counter[0] % 7 == 0:
+            print 'model performance: ', metrics[1] / float(metrics[0]) if metrics[0] else 0
+
+            X_train = [serving.respond('passenger', _) for _ in model.indices]
+            y_train = model.labels
+
+            print 'model training in progress...'
+            model.fit(X_train, y_train)
+
+            time.sleep(0.2)
 
         counter[0] += 1
         counter[1] += size

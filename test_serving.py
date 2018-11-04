@@ -1,5 +1,5 @@
 import pandas as pd
-from model import Passenger
+from data import Passenger
 from batch import Batch
 from serving import Serving
 

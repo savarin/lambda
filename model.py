@@ -1,40 +1,21 @@
-import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 
 
-class Passenger(object):
-    def __init__(self, idx,
-                 age, sibsp, parch, fare,
-                 sex, pclass, embarked,
-                 name, ticket, cabin):
-        self.idx = idx
-        self.age = age
-        self.sibsp = sibsp
-        self.parch = parch
-        self.fare = fare
-        self.sex = sex
-        self.pclass = pclass
-        self.embarked = embarked
-        self.name = name
-        self.ticket = ticket
-        self.cabin = cabin
+class Model(object):
+    def __init__(self):
+        self.counter = 0
+        self.labels = []
+        self.indices = []
+        self.classifier = None
 
-    def get(self, attribute):
-        return eval('self.' + attribute)
+    def ingest(self, label, idx):
+        self.counter += 1
+        self.labels.append(label)
+        self.indices.append(idx)
 
-    def featurize(self):
-        definition = [
-            ('age', self.age if not np.isnan(self.age) else -1),
-            ('sibsp', self.sibsp if not np.isnan(self.sibsp) else -1),
-            ('parch', self.parch if not np.isnan(self.parch) else -1),
-            ('fare', self.fare if not np.isnan(self.fare) else -1),
-            ('sex_female', int(self.sex == 'female')),
-            ('sex_male', int(self.sex == 'male')),
-            ('pclass_1', int(self.pclass == 1)),
-            ('pclass_2', int(self.pclass == 2)),
-            ('pclass_3', int(self.pclass == 3)),
-            ('embarked_C', int(self.embarked == 'C')),
-            ('embarked_S', int(self.embarked == 'S')),
-            ('embarked_Q', int(self.embarked == 'Q')),
-        ]
+    def fit(self, signals, labels):
+        self.classifier = RandomForestClassifier(n_estimators=100)
+        self.classifier.fit(signals, labels)
 
-        return [_[1] for _ in definition]
+    def predict(self, signals):
+        return self.classifier.predict(signals)

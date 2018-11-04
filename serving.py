@@ -43,7 +43,8 @@ class Serving(object):
             result = passenger.featurize()
 
             for feature_name in ['embarked', 'pclass', 'sex']:
-                result += self.overall_counts.get((feature_name, passenger.get(feature_name)), [-1, -1, -1])
+                key = (feature_name, passenger.get(feature_name))
+                result += self.overall_counts.get(key, [-1, -1, -1])
 
             self.signals[passenger.get('idx')] = result
 
