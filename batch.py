@@ -39,17 +39,3 @@ class Batch(object):
 
             feature_values = [None, [0, 1]]
             self.feature_counts[feature_name] = self.count(feature_array, feature_values)
-
-
-# def respond_counts(final_counts, feature_name, feature_value, signal_type):
-#     if (feature_name, feature_value) in final_counts:
-#         result = final_counts[(feature_name, feature_value)]
-
-#         if signal_type == 'all':
-#             return result[0]
-#         elif signal_type == 'ones':
-#             return result[1]
-#         elif signal_type == 'ratio':
-#             return result[2]
-
-#     return -1

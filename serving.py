@@ -2,10 +2,14 @@
 
 class Serving(object):
     def __init__(self):
+        self.passengers = []
         self.feature_counts = {}
-        self.final_counts = {}
 
-    def ingest(self, feature_counts):
+        self.overall_counts = {}
+        self.signals = {}
+
+    def ingest(self, passengers, feature_counts):
+        self.passengers = passengers
         self.feature_counts = feature_counts
 
     def convert(self, feature_counts):
@@ -33,4 +37,18 @@ class Serving(object):
         return result
 
     def process(self):
-        self.final_counts = self.convert(self.feature_counts)
+        self.overall_counts = self.convert(self.feature_counts)
+
+        for passenger in self.passengers:
+            result = passenger.featurize()
+
+            for feature_name in ['embarked', 'pclass', 'sex']:
+                result += self.overall_counts[(feature_name, passenger.get(feature_name))]
+
+            self.signals[passenger.get('idx')] = result
+
+    def respond(self, id_type, id_key):
+        if id_type == 'passenger':
+            return self.signals.get(id_key, None)
+        elif id_type == 'feature':
+            return self.overall_counts.get(id_key, (-1, -1, -1))

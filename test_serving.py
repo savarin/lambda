@@ -26,19 +26,22 @@ def test_serving_process():
 
     batch.process()
 
-    serving.ingest(batch.feature_counts)
+    serving.ingest(batch.passengers, batch.feature_counts)
     serving.process()
 
-    assert serving.final_counts[('embarked', 'C')] == [2, 2, 1.]
-    assert serving.final_counts[('embarked', 'S')] == [7, 3, 3/7.]
-    assert serving.final_counts[('embarked', 'Q')] == [1, 0, 0.]
+    assert serving.overall_counts[('embarked', 'C')] == [2, 2, 1.]
+    assert serving.overall_counts[('embarked', 'S')] == [7, 3, 3/7.]
+    assert serving.overall_counts[('embarked', 'Q')] == [1, 0, 0.]
 
-    assert serving.final_counts[('pclass', 1)] == [3, 2, 2/3.]
-    assert serving.final_counts[('pclass', 2)] == [1, 1, 1.0]
-    assert serving.final_counts[('pclass', 3)] == [6, 2, 1/3.]
+    assert serving.overall_counts[('pclass', 1)] == [3, 2, 2/3.]
+    assert serving.overall_counts[('pclass', 2)] == [1, 1, 1.0]
+    assert serving.overall_counts[('pclass', 3)] == [6, 2, 1/3.]
 
-    assert serving.final_counts[('sex', 'female')] == [5, 5, 1.]
-    assert serving.final_counts[('sex', 'male')] == [5, 0, 0.]
+    assert serving.overall_counts[('sex', 'female')] == [5, 5, 1.]
+    assert serving.overall_counts[('sex', 'male')] == [5, 0, 0.]
+
+    assert serving.signals[1] == [22.0, 1, 0, 7.25, 0, 1, 0, 0, 1, 0, 1, 0,
+                                  7, 3, 3/7., 6, 2, 1/3., 5, 0, 0.]
 
 
 if __name__ == '__main__':
