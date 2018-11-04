@@ -19,7 +19,7 @@ class Passenger(object):
         self.cabin = cabin
 
     def get(self, attribute):
-        return eval('self.' + attribute) 
+        return eval('self.' + attribute)
 
     def featurize(self):
         definition = [
@@ -38,9 +38,3 @@ class Passenger(object):
         ]
 
         return [_[1] for _ in definition]
-
-
-if __name__ == '__main__':
-    passenger = Passenger(0, 21, 0, 0, 100, 'female', 1, 'C', '', '', '')
-    print passenger.featurize()
-    print passenger.get('pclass')
