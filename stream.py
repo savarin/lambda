@@ -8,19 +8,19 @@ class Signal(object):
         self.columns = columns
         self.feature_names = feature_names
         self.categorical = categorical
-        self.indices = [self.columns.index(_) for _ in feature_names]
 
+        self.indices = [self.columns.index(_) for _ in feature_names]
         self.dictionary = {
             ('Sex', 'female'): [1, 0],
             ('Sex', 'male'): [0, 1],
+            ('Sex', None): [0, 0],
             ('Pclass', 1): [1, 0, 0],
             ('Pclass', 2): [0, 1, 0],
             ('Pclass', 3): [0, 0, 1],
+            ('Pclass', None): [0, 0, 0],
             ('Embarked', 'C'): [1, 0, 0],
             ('Embarked', 'S'): [0, 1, 0],
             ('Embarked', 'Q'): [0, 0, 1],
-            ('Sex', None): [0, 0],
-            ('Pclass', None): [0, 0, 0],
             ('Embarked', None): [0, 0, 0],
         }
 
