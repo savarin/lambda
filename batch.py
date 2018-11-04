@@ -18,7 +18,6 @@ def collect_counts(feature_array, feature_values):
 
     return result
 
-
 def convert_counts(feature_counts):
     result = {}
 
@@ -43,20 +42,41 @@ def convert_counts(feature_counts):
 
     return result
 
+def respond_counts(final_counts, feature_name, feature_value, signal_type):
+    if (feature_name, feature_value) in final_counts:
+        result = final_counts[(feature_name, feature_value)]
+
+        if signal_type == 'all':
+            return result[0]
+        elif signal_type == 'ones':
+            return result[1]
+        elif signal_type == 'ratio':
+            return result[2]
+
+    return -1
+
 
 def run():
     data = pd.read_csv('train.csv')
-    result = {}
+    feature_counts = {}
 
     for i, item in enumerate(['Pclass', 'Sex', 'Embarked']):
         feature_names = [item, 'Survived']
-        feature_array = data[feature_names].values.tolist()[:10]
+        feature_array = data[feature_names].values.tolist()
         feature_values = [None, [0, 1]]
 
-        result[item] = collect_counts(feature_array, feature_values)
+        feature_counts[item] = collect_counts(feature_array, feature_values)
 
-    for k, v in convert_counts(result).iteritems():
-        print k, v
+    final_counts = convert_counts(feature_counts)
+
+    for i in xrange(1, 4):
+        print i, respond_counts(final_counts, 'Pclass', i, 'ratio')
+
+    for item in ['female', 'male']:
+        print item, respond_counts(final_counts, 'Sex', item, 'ratio')
+
+    for item in ['C', 'S', 'Q']:
+        print item, respond_counts(final_counts, 'Embarked', item, 'ratio')
 
 
 if __name__ == '__main__':
